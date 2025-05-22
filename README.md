@@ -17,7 +17,7 @@
   <ol>
     <li>
       <p>Клонируйте репозиторий:</p>
-      <pre><code>git clone https://github.com/your-username/telegram-voice-bot.git
+      <pre><code>git clone https://github.com/your-username/Project-voice.git
 cd Project-voice</code></pre>
     </li>
     <li>
