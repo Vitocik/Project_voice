@@ -18,7 +18,7 @@
     <li>
       <p>Клонируйте репозиторий:</p>
       <pre><code>git clone https://github.com/your-username/telegram-voice-bot.git
-cd telegram-voice-bot</code></pre>
+cd Project-voice</code></pre>
     </li>
     <li>
       <p>Установите зависимости:</p>
