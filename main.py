@@ -21,7 +21,7 @@ logger = logging.getLogger('telegram-bot')
 
 # --- Загрузка токена ---
 def get_bot_token():
-    token = os.environ.get('7747571745:AAHLFh-wtJF0zxX3ql-2utVmIWuWzuHicDc')
+    token = os.environ.get('BOT_TOKEN')
     if not token:
         try:
             from config import BOT_TOKEN
