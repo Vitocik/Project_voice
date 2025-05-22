@@ -21,7 +21,7 @@ logger = logging.getLogger('telegram-bot')
 
 # --- Загрузка токена ---
 def get_bot_token():
-    token = os.environ.get('BOT_TOKEN')
+    token = os.environ.get('7747571745:AAHLFh-wtJF0zxX3ql-2utVmIWuWzuHicDc')
     if not token:
         try:
             from config import BOT_TOKEN
@@ -34,7 +34,7 @@ def get_bot_token():
 
 
 bot = telebot.TeleBot(get_bot_token())
-model = whisper.load_model("small")  # Оптимальный баланс скорости и качества
+model = whisper.load_model("small")
 
 
 # --- Команды ---
@@ -59,7 +59,53 @@ def help(message):
         "Поддерживаемые форматы:\n"
         "- Голосовые сообщения\n"
         "- Аудиофайлы (MP3, WAV, OGG)\n\n"
-        "Бот работает без сохранения ваших данных.",
+        "Бот не поддерживает: фото, видео, стикеры, GIF-анимации и другие медиафайлы.",
+        parse_mode='Markdown'
+    )
+
+
+# --- Обработка неподдерживаемых типов сообщений ---
+@bot.message_handler(content_types=[
+    'sticker', 'animation', 'video_note',
+    'location', 'contact', 'poll', 'dice'
+])
+def handle_unsupported(message):
+    content_type = {
+        'sticker': 'стикер',
+        'animation': 'GIF-анимацию',
+        'video_note': 'кружочек',
+        'location': 'геолокацию',
+        'contact': 'контакт',
+        'poll': 'опрос',
+        'dice': 'игральный кубик'
+    }.get(message.content_type, 'этот тип сообщения')
+
+    bot.reply_to(
+        message,
+        f"❌ Я не поддерживаю {content_type}.\n\n"
+        "Я умею работать только с голосовыми сообщениями и аудиофайлами (MP3, WAV, OGG).\n"
+        "Попробуйте отправить мне аудио или используйте /help для справки."
+    )
+
+
+# --- Обработка медиафайлов (фото, видео) ---
+@bot.message_handler(content_types=['photo', 'video'])
+def handle_media(message):
+    if message.photo:
+        bot.reply_to(message, "📷 Я вижу фото, но работаю только с аудио! Отправьте голосовое сообщение или аудиофайл.")
+    elif message.video:
+        bot.reply_to(message, "🎥 Я вижу видео, но работаю только с аудио! Отправьте голосовое сообщение или аудиофайл.")
+
+
+# --- Обработка текстовых сообщений ---
+@bot.message_handler(content_types=['text'])
+def handle_text(message):
+    bot.reply_to(
+        message,
+        "🤖 Я бот для распознавания голоса!\n\n"
+        "Отправьте мне голосовое сообщение или аудиофайл (MP3, WAV, OGG), "
+        "и я преобразую его в текст.\n\n"
+        "Используйте /help для получения справки.",
         parse_mode='Markdown'
     )
 
@@ -89,7 +135,7 @@ def handle_audio(message):
 
         # Скачивание файла
         file_info = bot.get_file(file_id)
-        bot.send_chat_action(message.chat.id, 'typing')  # Индикатор "бот печатает..."
+        bot.send_chat_action(message.chat.id, 'typing')
         downloaded_file = bot.download_file(file_info.file_path)
         input_file = f"audio.{file_ext}"
 
